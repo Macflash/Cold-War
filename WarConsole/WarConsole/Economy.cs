@@ -14,6 +14,8 @@ namespace WarConsole
         private int[] stats;
         private int[] net;
         private Random rand;
+        private int maxStat = 5;
+        private int eventBound = 1;
         
         public Economy(){
             statLength = Enum.GetNames(typeof(stat)).Length;
@@ -23,9 +25,36 @@ namespace WarConsole
 
         public void addEvent()
         {
-            int r = rand.Next(statLength - 1);
-            int amt = rand.Next(7) - 3;
-            stats[r] += amt;
+            int s = stats.Sum()/statLength;
+            int r;
+            int amt;
+
+            Console.WriteLine();
+
+            if (s > eventBound)
+            {
+                r = rand.Next(statLength - 1);
+                amt = rand.Next(7) - 5;
+                stats[r] = amt;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("{2} Event! {0} {1}", Enum.GetName(typeof(stat), r), amt, s);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+
+            if (s < -1 * eventBound)
+            {
+                r = rand.Next(statLength - 1);
+                amt = rand.Next(7) - 1;
+                stats[r] = amt;
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("{2} Event! {0} {1}", Enum.GetName(typeof(stat), r), amt, s);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+
+            r = rand.Next(statLength - 1);
+            amt = rand.Next(7) - 3;
+            stats[r] = amt;
+
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("Event! {0} {1}", Enum.GetName(typeof(stat), r), amt);
             Console.ForegroundColor = ConsoleColor.White;
@@ -51,7 +80,7 @@ namespace WarConsole
 
             // CAPITAL
             norm(stat.capital, stat.gdp);
-            //inv_bad(stat.capital, stat.employment); //capital causes cyclical/structural unemployment from advances? negative capital doesnt help employment....
+            inv_bad(stat.capital, stat.employment); //capital causes cyclical/structural unemployment from advances? negative capital doesnt help employment....
             norm(stat.capital, stat.manufacturing);
 
             // MANUFACTURING
@@ -64,6 +93,7 @@ namespace WarConsole
 
             // productivity, 
             norm(stat.productivity, stat.wages);
+            norm(stat.productivity, stat.companies);
             norm(stat.productivity, stat.gdp);
 
             //food, 
@@ -93,10 +123,12 @@ namespace WarConsole
             //spending, 
             norm(stat.spending, stat.gdp);
             norm(stat.spending, stat.manufacturing);
+            norm(stat.spending, stat.companies);
 
             //middleClass, 
             norm(stat.middleClass, stat.satisfaction);
             norm(stat.middleClass, stat.confidence);
+            good(stat.middleClass, stat.education);
             
             //buyingPower, 
             norm(stat.buyingPower, stat.middleClass);
@@ -125,11 +157,17 @@ namespace WarConsole
                     stats[(int)s]--;
                     if (net[(int)s] < stats[(int)s]) { stats[(int)s]--; }
                 }
+
+                if (stats[(int)s] > maxStat) { stats[(int)s] = maxStat; }
+                if (stats[(int)s] < -1 * maxStat) { stats[(int)s] = -1 * maxStat; }
+
                 if (stats[(int)s] == 0) { Console.ForegroundColor = ConsoleColor.DarkGray; }
                 if (stats[(int)s] > 0) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
                 if (stats[(int)s] > 1) { Console.ForegroundColor = ConsoleColor.Green; }
                 if (stats[(int)s] < 0) { Console.ForegroundColor = ConsoleColor.DarkRed; }
                 if (stats[(int)s] < -1) { Console.ForegroundColor = ConsoleColor.Red; }
+                //if (stats[(int)s] == maxStat) { Console.ForegroundColor = ConsoleColor.White; }
+                //if (stats[(int)s] == -1 * maxStat) { Console.ForegroundColor = ConsoleColor.Yellow; }
                 Console.Write("{0}: {1} / ", Enum.GetName(typeof(stat), s), stats[(int) s]);
                 Console.ForegroundColor = ConsoleColor.White;
             }

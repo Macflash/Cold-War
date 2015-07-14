@@ -17,7 +17,7 @@ namespace WarConsole
             Economy e = new Economy();
             Console.Write("Game Starting");
 
-            while (YES())
+            while (true)
             {
                 e.addEvent();
                 e.updateEconomy();
