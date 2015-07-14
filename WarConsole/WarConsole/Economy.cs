@@ -9,18 +9,26 @@ namespace WarConsole
     class Economy
     {
         // Economony Stats
-        private enum stat {employment, gdp, infrastructure, capital, manufacturing, education, productivity, food, confidence, inflation, satisfaction, savings, wages, spending, middleClass, buyingPower, companies, safety };
+        public enum stat {employment, gdp, infrastructure, capital, manufacturing, education, 
+                            productivity, food, confidence, inflation, satisfaction, savings,
+                            wages, spending, middleClass, buyingPower, companies, safety };
         private int statLength;
         private int[] stats;
         private int[] net;
         private Random rand;
         private int maxStat = 5;
         private int eventBound = 1;
+        private int maxRand = 3;
+        private int randRange = 4;
         
         public Economy(){
             statLength = Enum.GetNames(typeof(stat)).Length;
             stats = new int[statLength];
             rand = new Random();
+        }
+
+        public int[] getStats(){
+            return stats;
         }
 
         public void addEvent()
@@ -34,7 +42,7 @@ namespace WarConsole
             if (s > eventBound)
             {
                 r = rand.Next(statLength - 1);
-                amt = rand.Next(7) - 5;
+                amt = rand.Next(2 * maxRand + 1) - (maxRand + randRange);
                 stats[r] = amt;
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("{2} Event! {0} {1}", Enum.GetName(typeof(stat), r), amt, s);
@@ -44,7 +52,7 @@ namespace WarConsole
             if (s < -1 * eventBound)
             {
                 r = rand.Next(statLength - 1);
-                amt = rand.Next(7) - 1;
+                amt = rand.Next(2 * maxRand + 1) - (maxRand - randRange);
                 stats[r] = amt;
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("{2} Event! {0} {1}", Enum.GetName(typeof(stat), r), amt, s);
@@ -52,7 +60,7 @@ namespace WarConsole
             }
 
             r = rand.Next(statLength - 1);
-            amt = rand.Next(7) - 3;
+            amt = rand.Next(2 * maxRand + 1) - randRange;
             stats[r] = amt;
 
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -69,6 +77,7 @@ namespace WarConsole
             // EMPLOYMENT
             norm(stat.employment, stat.middleClass);
             norm(stat.employment, stat.buyingPower);
+            norm(stat.employment, stat.inflation);
 
             // GDP
             norm(stat.gdp, stat.satisfaction);
@@ -103,18 +112,19 @@ namespace WarConsole
             //confidence, 
             norm(stat.confidence, stat.spending);
             norm(stat.confidence, stat.companies);
-            norm(stat.confidence, stat.satisfaction);
+            norm(stat.confidence, stat.satisfaction); // maybe also boosts manufacturing? might be good otherwise
 
             //inflation, 
             inv(stat.inflation, stat.wages);
             bad(stat.inflation, stat.satisfaction);
             inv(stat.inflation, stat.buyingPower);
+            inv(stat.inflation, stat.savings);
 
             //satisfaction, 
             
 
             //savings, 
-            
+            norm(stat.savings, stat.companies);
 
             //wages,
             norm(stat.wages, stat.middleClass);

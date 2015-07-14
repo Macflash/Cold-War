@@ -22,5 +22,10 @@ namespace WarConsole
             economy = new Economy();
         }
 
+        public int[] getEconStats()
+        {
+            return economy.getStats();
+        }
+
     }
 }
