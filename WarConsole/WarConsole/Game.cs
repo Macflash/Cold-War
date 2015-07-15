@@ -23,6 +23,9 @@ namespace WarConsole
             round = 0;
             phase = 0;
             player = new Country();
+            Action.BuildActions();
+            List<Action> acts = Action.EconActions;
+            Console.WriteLine(":: {0}", acts.Count);
 
             bool first = true;
             while (gameRunning)

@@ -11,8 +11,8 @@ namespace WarConsole
         // Economony Stats
         public enum stat {employment, gdp, infrastructure, capital, manufacturing, education, 
                             productivity, food, confidence, inflation, satisfaction, savings,
-                            wages, spending, middleClass, buyingPower, companies, safety };
-        private int statLength;
+                            wages, spending, middleClass, buyingPower, companies, safety, poverty, theWealthy, oil };
+        private static int statLength = Enum.GetNames(typeof(stat)).Length;
         private int[] stats;
         private int[] net;
         private Random rand;
@@ -22,7 +22,6 @@ namespace WarConsole
         private int randRange = 4;
         
         public Economy(){
-            statLength = Enum.GetNames(typeof(stat)).Length;
             stats = new int[statLength];
             rand = new Random();
         }

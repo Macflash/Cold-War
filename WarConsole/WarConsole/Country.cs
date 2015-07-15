@@ -14,12 +14,18 @@ namespace WarConsole
         private int clout; // political
 
         private Economy economy;
+        private Military military;
+        private Politics politics;
+        private Climate climate;
 
         public Country()
         {
             funds = 10;
             clout = 10;
             economy = new Economy();
+            military = new Military();
+            politics = new Politics();
+            climate = new Climate();
         }
 
         public int[] getEconStats()
