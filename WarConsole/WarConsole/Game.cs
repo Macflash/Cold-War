@@ -24,8 +24,6 @@ namespace WarConsole
             phase = 0;
             player = new Country();
             Action.BuildActions();
-            List<Action> acts = Action.EconActions;
-            Console.WriteLine(":: {0}", acts.Count);
 
             bool first = true;
             while (gameRunning)
@@ -38,22 +36,31 @@ namespace WarConsole
 
         public void playRound(bool firstRound)
         {
+            
+            Console.ForegroundColor = ConsoleColor.White;
             // Action 1
             ActionPhase(player);
-
+            player.updateCountry();
+            
             // Press Release / Statement / Declaration
             // - who goes first or is it simultaneous?
+            StatementPhase(player);
+            player.updateCountry();
 
             // Action 2
             ActionPhase(player);
+            player.updateCountry();
+
             // End of Year Report
             // - Includes historical performance and current economy stats/boosts
             ReportPhase(player);
+
+            // Random Event!
+            player.addEvent();
         }
 
         public void ReportPhase(Country c)
         {
-
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("Here Is Your Economic Report For The Past Year");
             Console.WriteLine("----------------------------------------------");
@@ -85,32 +92,35 @@ namespace WarConsole
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("-**              ACTION PHASE              **-");
             Console.WriteLine("----------------------------------------------");
+            Console.WriteLine("Funds: {0}, Clout: {1}", c.Funds(), c.Clout());
+
+            Action a = PickAction(c);
+
+            //apply the action bro!
+            c.applyAction(a);
+
+            Console.WriteLine("You chose: {0}", a.Name());
+        }
+
+        public Action PickAction(Country c)
+        {
             Console.WriteLine("1. Economic      2. Military      3. Political");
-            Console.WriteLine();
-
-            PickActionType(c);
-
-        }
-
-        public void PickActionType(Country c)
-        {
             int i = Program.EMP();
-            if (i == 1) { ShowEcon(c); }
-            if (i == 2) { ShowMilitary(c); }
-            if (i == 3) { ShowPolitics(c); }
+            if (i == 1) { Console.WriteLine("ECONOMY:"); return ShowActions(c, Action.EconActions); }
+            else if (i == 2) { Console.WriteLine("MILITARY:"); return ShowActions(c, Action.MilitaryActions); }
+            else if (i == 3) { Console.WriteLine("POLITICS:"); return ShowActions(c, Action.PoliticalActions); }
+            else { return PickAction(c); }
         }
 
-        public void ShowEcon(Country c)
+        public Action ShowActions(Country c, List<Action> alist)
         {
-            Console.WriteLine("ECON:");
-        }
-        public void ShowMilitary(Country c)
-        {
-            Console.WriteLine("MILITARY:");
-        }
-        public void ShowPolitics(Country c)
-        {
-            Console.WriteLine("POLITICS:");
+            int r = Action.listActions(alist);
+            if (r > 0)
+            {
+                //Console.WriteLine(r);
+                return alist.ElementAt(r - 1);
+            }
+            else { return PickAction(c); }
         }
 
         public void StatementPhase(Country c)

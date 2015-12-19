@@ -30,6 +30,11 @@ namespace WarConsole
             return stats;
         }
 
+        public void addStat(Economy.stat e, int b)
+        {
+            stats[(int)e] += b;
+        }
+
         public void addEvent()
         {
             int s = stats.Sum()/statLength;
@@ -151,9 +156,6 @@ namespace WarConsole
             norm(stat.safety, stat.satisfaction);
             norm(stat.safety, stat.confidence);
 
-            //go through the net and add some stuff to each piece if it was a net pos or neg.
-            Console.WriteLine();
-            Console.WriteLine("Country: ");
             foreach (stat s in Enum.GetValues(typeof(stat)))
             {
                 if (net[(int)s] > 0)
@@ -169,16 +171,6 @@ namespace WarConsole
 
                 if (stats[(int)s] > maxStat) { stats[(int)s] = maxStat; }
                 if (stats[(int)s] < -1 * maxStat) { stats[(int)s] = -1 * maxStat; }
-
-                if (stats[(int)s] == 0) { Console.ForegroundColor = ConsoleColor.DarkGray; }
-                if (stats[(int)s] > 0) { Console.ForegroundColor = ConsoleColor.DarkGreen; }
-                if (stats[(int)s] > 1) { Console.ForegroundColor = ConsoleColor.Green; }
-                if (stats[(int)s] < 0) { Console.ForegroundColor = ConsoleColor.DarkRed; }
-                if (stats[(int)s] < -1) { Console.ForegroundColor = ConsoleColor.Red; }
-                //if (stats[(int)s] == maxStat) { Console.ForegroundColor = ConsoleColor.White; }
-                //if (stats[(int)s] == -1 * maxStat) { Console.ForegroundColor = ConsoleColor.Yellow; }
-                Console.Write("{0}: {1} / ", Enum.GetName(typeof(stat), s), stats[(int) s]);
-                Console.ForegroundColor = ConsoleColor.White;
             }
 
         }
